@@ -4,6 +4,7 @@ set -e
 
 USAGE="Usage: $0 <clang|gcc|gcc6> <debug|release> <git_repo_directory>"
 USE_ASAN="OFF"
+USE_UBSAN="OFF"
 
 if [ ! -z "$3" ]; then
    case "$2" in
@@ -11,6 +12,7 @@ if [ ! -z "$3" ]; then
       TYPE="Debug"
       if [ "$1" == "clang" ]; then
          USE_ASAN="ON"
+         USE_UBSAN="ON"
          # Necessary to avoid linking errors later on
          ASANLIB=$(echo "int main(void){return 0;}" | xcrun clang -fsanitize=address \
          -xc -o/dev/null -v - 2>&1 |   tr ' ' '\n' | grep libclang_rt.asan_osx_dynamic.dylib)
@@ -207,6 +209,7 @@ function BuildWidelands() {
       -DGLEW_LIBRARY:PATH="$(brew --prefix glew)/lib/libGLEW.dylib" \
       -DCMAKE_PREFIX_PATH:PATH="${PREFIX_PATH}" \
       -DOPTION_ASAN="$USE_ASAN"
+      -DOPTION_UBSAN="$USE_UBSAN"
    ninja
 
    echo "Done building."

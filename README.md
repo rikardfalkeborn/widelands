@@ -95,6 +95,7 @@ Note that CMake options are prefixed with `-D`. These are the available options:
 | --- | --- | --- | --- |
 | `CMAKE_BUILD_TYPE` | `Debug`/`Release` | `Debug` | Create a release or debug build |
 | `OPTION_ASAN` | `ON`/`OFF` | `ON` for Debug builds /`OFF` for Release builds | Use AddressSanitizer. Switching this off only works once. You will have to clear the `build` directory if you want to switch this off again in a later build. |
+| `OPTION_UBSAN` | `ON`/`OFF` | `ON` for Debug builds /`OFF` for Release builds | Use UndefinedBehaviorSanitizer. Switching this off only works once. You will have to clear the `build` directory if you want to switch this off again in a later build. |
 | `OPTION_BUILD_TRANSLATIONS` | `ON`/`OFF` | `ON` | Build translations |
 | `OPTION_BUILD_CODECHECK` | `ON`/`OFF` | `ON` | Build codecheck. Only available in Debug builds. |
 | `OPTION_BUILD_WEBSITE_TOOLS` | `ON`/`OFF` | `ON` | Build website-related tools |

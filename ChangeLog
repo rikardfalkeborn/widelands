@@ -208,7 +208,8 @@
   to missing lbpdcurses.dll
 - Added basic support for the XDG standard
   https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html
-
+- Added possibility to build with UndefinedBehaviorSanitizer
+  https://clang.llvm.org/docs/UndefinedBehaviorSanitizer.html
 
 ### Other Issues
 

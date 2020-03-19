@@ -23,8 +23,8 @@ echo " "
 print_help () {
     # Print help for our options
     echo "Per default, this script will create a full debug build."
-    echo "Unless explicitly switched off, AddressSanitizer will"
-    echo "be used as well with debug builds."
+    echo "Unless explicitly switched off, AddressSanitizer and"
+    echo "UndefinedBehaviorSanitizer will be used as well with debug builds."
     echo " "
     echo "The following options are available:"
     echo " "
@@ -43,6 +43,10 @@ print_help () {
     echo " "
     echo "-a or --no-asan       If in debug mode, switch off the AddressSanitizer."
     echo "                      Release builds are created without AddressSanitizer"
+    echo "                      by default."
+    echo " "
+    echo "-u or --no-ubsan      If in debug mode, switch off the UndefinedBehaviorSanitizer."
+    echo "                      Release builds are created without UndefinedBehaviorSanitizer"
     echo "                      by default."
     echo " "
     echo "--without-xdg         Disable support for the XDG Base Directory Specification."
@@ -89,6 +93,7 @@ BUILD_TRANSLATIONS="ON"
 BUILD_TESTS="ON"
 BUILD_TYPE="Debug"
 USE_ASAN="ON"
+USE_UBSAN="ON"
 COMPILER="default"
 USE_XDG="ON"
 
@@ -129,6 +134,7 @@ do
     -r|--release)
       BUILD_TYPE="Release"
       USE_ASAN="OFF"
+      USE_UBSAN="OFF"
     shift
     ;;
     -t|--no-translations)
@@ -137,6 +143,10 @@ do
     ;;
     -s|--skip-tests)
       BUILD_TESTS="OFF"
+    shift
+    ;;
+    -u|--no-ubsan)
+      USE_UBSAN="OFF"
     shift
     ;;
     -w|--no-website)
@@ -209,6 +219,13 @@ if [ $USE_ASAN = "ON" ]; then
 else
   echo "Will build without AddressSanitizer."
 fi
+if [ $USE_UBSAN = "ON" ]; then
+  echo "Will build with UndefinedBehaviorSanitizer."
+  echo "https://clang.llvm.org/docs/UndefinedBehaviorSanitizer.html"
+  echo "You can use -u or --no-ubsan to switch it off."
+else
+  echo "Will build without UndefinedBehaviorSanitizer."
+fi
 if [ $USE_XDG = "ON" ]; then
   echo " "
   echo "Basic XDG Base Directory Specification will be used on Linux"
@@ -279,9 +296,9 @@ buildtool="" #Use ninja by default, fall back to make if that is not available.
   # Compile Widelands
   compile_widelands () {
     if [ $buildtool = "ninja" ] || [ $buildtool = "ninja-build" ] ; then
-      cmake -G Ninja .. -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DOPTION_BUILD_WEBSITE_TOOLS=$BUILD_WEBSITE -DOPTION_BUILD_TRANSLATIONS=$BUILD_TRANSLATIONS -DOPTION_BUILD_TESTS=$BUILD_TESTS -DOPTION_ASAN=$USE_ASAN -DUSE_XDG=$USE_XDG
+      cmake -G Ninja .. -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DOPTION_BUILD_WEBSITE_TOOLS=$BUILD_WEBSITE -DOPTION_BUILD_TRANSLATIONS=$BUILD_TRANSLATIONS -DOPTION_BUILD_TESTS=$BUILD_TESTS -DOPTION_ASAN=$USE_ASAN -DOPTION_UBSAN=$USE_UBSAN -DUSE_XDG=$USE_XDG
     else
-      cmake .. -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DOPTION_BUILD_WEBSITE_TOOLS=$BUILD_WEBSITE -DOPTION_BUILD_TRANSLATIONS=$BUILD_TRANSLATIONS -DOPTION_BUILD_TESTS=$BUILD_TESTS -DOPTION_ASAN=$USE_ASAN -DUSE_XDG=$USE_XDG
+      cmake .. -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DOPTION_BUILD_WEBSITE_TOOLS=$BUILD_WEBSITE -DOPTION_BUILD_TRANSLATIONS=$BUILD_TRANSLATIONS -DOPTION_BUILD_TESTS=$BUILD_TESTS -DOPTION_ASAN=$USE_ASAN -DOPTION_UBSAN=$USE_UBSAN -DUSE_XDG=$USE_XDG
     fi
 
     $buildtool -j $CORES
