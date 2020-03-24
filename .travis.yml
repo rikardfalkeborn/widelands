@@ -34,10 +34,6 @@ before_script:
       export PATH="/usr/local/opt/ccache/libexec:$PATH"; \
     fi
 
-branches:
-  only:
-    - master
-
 cache: ccache
 
 jobs:
